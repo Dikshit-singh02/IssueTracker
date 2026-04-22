@@ -1,0 +1,63 @@
+/* Bootstrap-like Custom Styles for Dashboard */
+.dashboard-container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.kpi-card {
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+}
+
+.kpi-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.1) !important;
+}
+
+.card-header {
+  border-radius: 12px 12px 0 0 !important;
+}
+
+.bg-gradient-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.bg-gradient-info {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+}
+
+.table th {
+  border-top: none !important;
+  font-weight: 600;
+  color: #495057;
+}
+
+.table td {
+  vertical-align: middle;
+}
+
+.badge {
+  font-size: 0.8em;
+}
+
+.btn {
+  border-radius: 8px;
+}
+
+.spinner {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 768px) {
+  .dashboard-header h1 {
+    font-size: 2rem !important;
+  }
+  
+  .kpi-card h2 {
+    font-size: 1.8rem;
+  }
+}
