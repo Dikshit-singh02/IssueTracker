@@ -1,0 +1,22 @@
+{
+  "name": "ccms-pngrb-issue-tracker",
+  "version": "1.0.0",
+  "description": "Consumer Complaint Management System based on PNGRB regulations - Full MERN Stack",
+  "main": "server.js",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "npm run server --workspace=backend",
+    "client": "npm run start --workspace=frontend",
+    "install-all": "npm install && cd backend && npm install && cd ../frontend && npm install"
+  },
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  },
+  "keywords": ["mern", "complaint", "pngrb", "dashboard", "payments"],
+  "author": "BLACKBOXAI",
+  "license": "MIT"
+}
