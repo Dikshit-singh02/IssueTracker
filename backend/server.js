@@ -28,7 +28,9 @@ app.use('/api/complaints', complaintRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/payment', paymentRoutes);
 
-// Fix require path for utils/notifications in tatCron if needed later
+// Init notifications
+const { initNotifications } = require('./utils/notifications');
+initNotifications();
 
 app.get('/', (req, res) => {
   res.json({ message: 'CCMS PNGRB Backend v1.0 - Ready!' });

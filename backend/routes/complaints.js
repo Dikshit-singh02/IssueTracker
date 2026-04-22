@@ -1,7 +1,14 @@
 const express = require('express');
 const auth = require('../middleware/auth');
 const roleCheck = require('../middleware/roleCheck');
-const { createComplaint, getComplaints } = require('../controllers/complaintController');
+const {
+  createComplaint,
+  getMyComplaints,
+  getComplaintById,
+  escalateComplaint,
+  uploadFile,
+  updateStatus
+} = require('../controllers/complaintController');
 
 const router = express.Router();
 
@@ -9,9 +16,12 @@ const router = express.Router();
 router.use(auth);
 
 router.post('/', createComplaint);
-router.get('/my', getComplaints);
-router.get('/', roleCheck(['Admin', 'NodalOfficer']), getComplaints); // Admin see all
+router.get('/my', getMyComplaints);
+router.get('/:id', getComplaintById);
+router.get('/', roleCheck(['Admin', 'NodalOfficer']), getMyComplaints);
 
-// TODO: PUT /:id/escalate, POST /upload, GET /:id/status etc.
+router.put('/:id/escalate', escalateComplaint);
+router.put('/:id/status', updateStatus);
+router.post('/:id/upload', uploadFile);
 
 module.exports = router;

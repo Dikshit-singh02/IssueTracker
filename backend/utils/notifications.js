@@ -1,41 +1,63 @@
-// Email + SMS Notifications
 const nodemailer = require('nodemailer');
 const twilio = require('twilio');
-const User = require('../models/User');
 
-const transporter = nodemailer.createTransporter({
-  service: 'gmail',
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS
+let transporter;
+let twilioClient;
+
+const initNotifications = () => {
+  // Email
+  transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS
+    }
+  });
+
+  // SMS (Twilio) - Optional, skip if no env vars
+  if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_ACCOUNT_SID.startsWith('AC')) {
+    twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
   }
-});
-
-const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+};
 
 const sendEmail = async (to, subject, text) => {
-  await transporter.sendMail({
-    from: process.env.EMAIL_USER,
-    to,
-    subject,
-    text
-  });
+  try {
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to,
+      subject,
+      text
+    });
+    console.log('📧 Email sent to', to);
+  } catch (err) {
+    console.log('Email failed:', err.message);
+  }
 };
 
-const sendSMS = async (to, message) => {
-  await twilioClient.messages.create({
-    body: message,
-    from: process.env.TWILIO_PHONE,
-    to
-  });
+const sendSMS = async (phone, message) => {
+  try {
+    await twilioClient.messages.create({
+      body: message,
+      from: process.env.TWILIO_PHONE,
+      to: phone
+    });
+    console.log('📱 SMS sent to', phone);
+  } catch (err) {
+    console.log('SMS failed:', err.message);
+  }
 };
 
-const notifyEscalation = async (complaint) => {
-  const user = await User.findById(complaint.user);
-  const msg = `Your complaint ${complaint.complaintId} escalated to level ${complaint.escalationLevel}. TAT: ${3 * complaint.escalationLevel} days`;
+const sendNotification = async (user, message) => {
+  console.log('🔔 Notification:', message);
   
-  sendEmail(user.email, 'Complaint Escalated - CCMS PNGRB', msg);
-  sendSMS(user.phone, msg);
+  if (user.email) {
+    await sendEmail(user.email, 'CCMS PNGRB Update', message);
+  }
+  
+  if (user.phone) {
+    await sendSMS(user.phone, message);
+  }
 };
 
-module.exports = { sendEmail, sendSMS, notifyEscalation };
+module.exports = { sendNotification, initNotifications };
+
